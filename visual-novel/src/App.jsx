@@ -1,4 +1,3 @@
-//App.jsx
 import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/rapier'
@@ -9,12 +8,15 @@ const controlsMap = [
     { name: "forward", keys: ["ArrowUp", "KeyW"] },
     { name: "backward", keys: ["ArrowDown", "KeyS"] },
     { name: "left", keys: ["ArrowLeft", "KeyA"] },
-    { name: "right", keys: ["ArrowRight", "KeyD"] }
+    { name: "right", keys: ["ArrowRight", "KeyD"] },
+    { name: "jump", keys: ["Space"] }, // only for freecam (up)
+    { name: "crouch", keys: ["KeyC"] }, // only for freecam (down)
+    { name: "sprint", keys: ["Shift"] } // only for freecam AND EVENTUALLY GAME (speed+)
 ];
 
 import Player from './components/Player'
-import { Ground, Wall, SensorBlock } from './components/Props'
-import { DirectionalLight, DebugFreecam } from './components/LightsCameraAction'
+import { Ground, Wall, House, SensorBlock } from './components/Props'
+import { DirectionalLight } from './components/LightsCameraAction'
 
 export default function App() {
     const [debug, setDebug] = useState(false)
@@ -25,18 +27,19 @@ export default function App() {
 
     return (
         <KeyboardControls map={controlsMap}>
-            <Canvas shadows>
-                <DebugFreecam enabled={freecam} />
-
+            <Canvas className='bg-black' shadows>
                 <ambientLight intensity={0.5} />
                 <DirectionalLight debug={debug} />
 
                 <Physics debug={debug}>
                     <Ground />
                     <Player freecam={freecam} />
+                    <House />
+
                     <Wall />
-                    <SensorBlock scale={[1, 4, 4]} shown={debug} onPlayerEnter={() => console.log("Player detected!")} />
+                    {/* <SensorBlock scale={[2, 6.2, 2]} visible={debug} onPlayerEnter={() => console.log("Player detected!")} /> */}
                 </Physics>
+
             </Canvas>
         </KeyboardControls>
     )

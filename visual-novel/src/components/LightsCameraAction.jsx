@@ -38,22 +38,4 @@ function DirectionalLight({ debug }) {
     )
 }
 
-function DebugFreecam({ enabled }) {
-    const cameraRef = useRef()
-
-    if (!enabled) return null
-
-    return (
-        <>
-            <PerspectiveCamera
-                ref={cameraRef}
-                makeDefault
-                position={[0, 5, 10]}
-                fov={75}
-            />
-            <OrbitControls />
-        </>
-    )
-}
-
-export {DirectionalLight, DebugFreecam }
+export {DirectionalLight }
