@@ -1,24 +1,27 @@
-import { useState } from 'react'
+//app.jsx
+import { useState, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/rapier'
 import { KeyboardControls } from '@react-three/drei'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-const controlsMap = [
-    { name: "forward", keys: ["ArrowUp", "KeyW"] },
-    { name: "backward", keys: ["ArrowDown", "KeyS"] },
-    { name: "left", keys: ["ArrowLeft", "KeyA"] },
-    { name: "right", keys: ["ArrowRight", "KeyD"] },
-    { name: "jump", keys: ["Space"] }, // only for freecam (up)
-    { name: "crouch", keys: ["KeyC"] }, // only for freecam (down)
-    { name: "sprint", keys: ["Shift"] } // only for freecam AND EVENTUALLY GAME (speed+)
-];
-
-import Player from './components/Player'
-import { Ground, Wall, House, SensorBlock } from './components/Props'
+import * as obj from './components/ObjectsRewrite'
+import { teleport } from './components/Devtools'
 import { DirectionalLight } from './components/LightsCameraAction'
 
+const controlsMap = [
+    { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
+    { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
+    { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
+    { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+    { name: 'jump', keys: ['Space'] }, // only for freecam (up)
+    { name: 'crouch', keys: ['KeyC'] }, // only for freecam (down)
+    { name: 'sprint', keys: ['Shift'] } // only for freecam AND EVENTUALLY GAME (speed+)
+];
+
 export default function App() {
+    const playerRef = useRef();
+
     const [debug, setDebug] = useState(false)
     const [freecam, setFreecam] = useState(false)
 
@@ -32,12 +35,25 @@ export default function App() {
                 <DirectionalLight debug={debug} />
 
                 <Physics debug={debug}>
-                    <Ground />
-                    <Player freecam={freecam} />
-                    <House />
+                    <obj.Box name={'ground'} scale={[100, 0.1, 100]} color={'blue'} /> {/* Default rotation and position*/}
+                    {/* create player */}
+                    <obj.Player  name={'player'} ref={playerRef} freecam={freecam} />
 
-                    <Wall />
-                    {/* <SensorBlock scale={[2, 6.2, 2]} visible={debug} onPlayerEnter={() => console.log("Player detected!")} /> */}
+                    {/* create world */}
+                    <obj.Box type={'Box'} name={'testBlock'} pos={[0, 0, 3]} scale={[1, 0.5, 1]} />
+                    <obj.Box type={'Box'} name={'testBlock2'} pos={[0, 0, 5]} scale={[1, 0.5, 1]} />
+                    <obj.Box
+                        type={'Sensor'}
+                        name={'antiVoidSensor'}
+                        pos={[0, -15, 0]}
+                        scale={[300, 5, 300]}
+                        visible={debug}
+                        opacity={0.3}
+                        onPlayerEnter={() => {
+                            console.log('Teleport triggered!');
+                            teleport('player', { x: 0, y: 10, z: 0 });
+                        }}
+                    />
                 </Physics>
 
             </Canvas>

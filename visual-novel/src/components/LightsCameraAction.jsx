@@ -1,6 +1,9 @@
+//LightsCameraAction.jsx
 import { useRef, useEffect } from 'react'
-import { PerspectiveCamera, OrbitControls, useHelper } from '@react-three/drei'
+import { useHelper } from '@react-three/drei'
 import * as THREE from 'three'
+
+//I don't really understand whats happening in here...
 
 function DirectionalLight({ debug }) {
     const directionalLightRef = useRef()
@@ -38,4 +41,4 @@ function DirectionalLight({ debug }) {
     )
 }
 
-export {DirectionalLight }
+export { DirectionalLight }
